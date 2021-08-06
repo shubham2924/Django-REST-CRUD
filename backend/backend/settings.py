@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!3r0c8&pwf97bj@&qo)_5q$7+)zp4e^p2-#xswfu#@lnm=u&%5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -128,5 +128,5 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-ALLOWED_HOSTS=['*']
+
 CORS_ORIGIN_ALLOW_ALL = True

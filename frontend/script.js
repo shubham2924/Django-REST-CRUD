@@ -4,6 +4,7 @@ const url = "http://localhost:8000/api/todos/";
 const addPostForm = document.querySelector(".add-post-form")
 const titleValue = document.getElementById('title-value');
 const bodyValue = document.getElementById('body-value');
+const btnSubmit = document.querySelector('.btn')
 const renderPosts = (posts) =>{
   posts.forEach(post =>{
     output += `
@@ -15,7 +16,7 @@ const renderPosts = (posts) =>{
           <h5 class="card-title">${post.title}</h5>
           <p class="card-text">${post.description}</p>
         </div>
-        <div class="d-grid gap-2 d-md-block" data-id=${post.id}>
+        <div class="d-grid gap-2 d-md-block" data-id=${post.id} data-title=${post.title} data-desc=${post.description}>
             <button type="button" class="ms-3 mb-2 btn btn-primary" id="edit-post">Edit</button>
             <button type="button" class="mb-2 ms-3 btn btn-danger" id="delete-post">Delete</button>
           </div>
@@ -41,6 +42,9 @@ postsList.addEventListener('click',(event)=>{
   let deleteButtonIsPressed = event.target.id == "delete-post";
   let editButtonIsPressed = event.target.id == "edit-post";
   let id = event.target.parentElement.dataset.id;
+  let title = event.target.parentElement.dataset.title;
+  let desc = event.target.parentElement.dataset.desc;
+
   //delete post logic
   if(deleteButtonIsPressed){
     fetch(`${url}${id}/`,
@@ -52,6 +56,28 @@ postsList.addEventListener('click',(event)=>{
     .then(()=> location.reload())
     console.log(id);
   }
+  //edit post logic
+  if(editButtonIsPressed){
+    //const parent = event.target.parentElement;
+    const titleContent =  document.querySelectorAll('.card-title');
+    console.log(title);
+    console.log(desc);
+    titleValue.value = title;
+    bodyValue.value = desc;
+  }
+  btnSubmit.addEventListener('click',(event)=>{
+    event.preventDefault()
+    fetch(`${url}${id}/`,{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        title:titleValue.value,
+        body:bodyValue.value,
+      })
+    })
+    .then(res=>res.json())
+    .then(()=>location.reload())
+  })
 }) 
     
 //add new post
@@ -62,11 +88,6 @@ addPostForm.addEventListener('submit',(event) =>{
 
   fetch(url,{
     method: 'POST',
-    mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
-    redirect: 'follow',
-    referrerPolicy: 'no-referrer',
     headers :{
       'Content-Type':'application/json'
     },
@@ -84,4 +105,9 @@ addPostForm.addEventListener('submit',(event) =>{
   .catch((error) => {
     console.error('Error:', error);
   });
+
+  titleValue.value='';
+  bodyValue.value='';
+
+
 })
